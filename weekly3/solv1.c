@@ -2,16 +2,13 @@
 
 int main()
 {
-    int n;
+    int n, fac = 1;
+    printf("Input your number to find factorial : ");
     scanf("%d" ,&n);
-    for (int i = 1; i <=n; i++)
+    for (int i = 1; i <= n; i++)
     {
-        for (int j = 1; j <= i; j++)
-        {
-            printf("*");
-
-        }
-        printf("\n");
+        fac *= i;
     }
+    printf("%d" ,fac);
     return 0;
 }

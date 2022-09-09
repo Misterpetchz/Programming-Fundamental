@@ -1,17 +1,19 @@
 #include <stdio.h>
 
+long factorial(int n)
+{
+    if (n <= 0)
+    {
+        return 0;
+    }
+    else
+        return (n * factorial(n - 1));
+}
+
 int main()
 {
-    int n,k,sam = 1;
+    int n;
     scanf("%d" ,&n);
-    for (int i = n; i>0; i--)
-    {
-        for (k = sam; k>=1; k--)
-        {
-            printf("*");
-        }
-        sam += 1; //*เพิ่มอันละบรรททัด
-        printf("\n");
-    }
+    printf("%d",factorial(n));
     return 0;
 }

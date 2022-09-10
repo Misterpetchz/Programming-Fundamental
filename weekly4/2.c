@@ -1,20 +1,19 @@
 #include <stdio.h>
 
+long int power(int , int);
+
 int main()
 {
-    int rows;
-    scanf("%d" ,&rows);
-    for (int i = 1; i <= rows; i++)
-    {
-        for (int j = 1; j <= rows - i; j++)
-        {
-            printf("  ");
-        }
-        for (int k = 1; k <= (2 * i - 1); k++)
-        {
-            printf("* ");
-        }
-        printf("\n");
-    }
+    int base ,expo ,ans;
+    scanf("%d %d" ,&base ,&expo);
+    ans = power(base ,expo);
+    printf("Power is : %d" ,ans);
     return 0;
+}
+long int power(int x ,int n)
+{
+    if (n == 0)
+        return 1;
+    else
+        return x * power(x , n - 1);
 }

@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <windows.h>
 #include <conio.h>
+#include <time.h>
+
 int _kbhit();
 int _getch();
 
@@ -55,18 +57,74 @@ void clear_bullet(int x, int y)
 	printf(" ");
 }
 
+void bullet_shoot(int x, int y)
+{
+	if (y > 0)
+	{
+		clear_bullet(x, y);
+		draw_bullet(x, --y);
+	}
+	else
+		clear_bullet(x, y);
+}
+
+void draw_star(int x, int y)
+{
+	gotoxy(x, y);
+	printf("*");
+}
+
+int Random1()
+{
+	int min1 = 10;
+	int max1 = 70;
+	int num = (rand() % (max1 - min1 + 1)) + min1;
+	return num;
+}
+
+int Random2()
+{
+	int min2 = 2;
+	int max2 = 5;
+	int num = (rand() % (max2 - min2 + 1)) + min2;
+	return num;
+}
+
+void draw_point()
+{
+	gotoxy(67, 0);
+	printf(" ");
+}
+char cursor(int x, int y)
+{
+	HANDLE hStd = GetStdHandle(STD_OUTPUT_HANDLE);
+	char buf[2]; COORD c = { x ,y }; DWORD num_read;
+	if (
+	!ReadConsoleOutputCharacter(hStd,(LPTSTR)buf,1,c,(LPDWORD)&num_read))
+		return '\0';
+	else
+		return buf[0];
+}
+
 int main()
 {
+	srand(time(0));
+	for (int i = 0; i < 20; i++)
+	{
+		draw_star(Random1(), Random2());
+	}
 	char ch = ' ';
-	int x = 38, y = 20, bullet = 0, ammo = 5;
-	int	bx ,by , i, move = 0;
+	int x = 38, y = 20, st_bull[5];
+	int	bx[5], by[5], move = 0, i = 0;
+	int point = 0;
 	setcursor(0);
-    srand(time(0));
 	draw_ship(x, y);
 	
 
 	do
 	{
+		draw_point();
+		printf("Points : %d", point);
 		if (_kbhit())
 		{
 			ch = _getch();
@@ -83,12 +141,17 @@ int main()
 			{
 				move = 3;
 			}
-			if (ch == ' ' && bullet != 1 && ammo > 0)
+			if (ch == ' ' && i < 5)
 			{
-				bullet = 1;
-				bx = x + 3;
-				by = y - 1;
-
+				
+				bx[i] = x + 3;
+				by[i] = y - 1;
+				st_bull[i] = 1;
+				i++;
+			}
+			else if (i <= 5 && st_bull[i - 1] == 0)
+			{
+				i = 0;
 			}
 			fflush(stdin);
 		}
@@ -112,17 +175,28 @@ int main()
 		}
 
 		//shoot
-		if (bullet == 1)
+		for (int j = 0; j < i; j++)
 		{
-			clear_bullet(bx, by);
-			if (by == 2)
+			if (cursor(bx[j], by[j] - 1) == '*')
 			{
-				bullet = 0;
-				ammo -= 1;
+				clear_bullet(bx[j], by[j] - 1);
+				clear_bullet(bx[j], by[j]);
+				st_bull[j] = 0;
+				draw_star(Random1(), Random2());
+				bx[j] = 0, by[j] = 0;
+				point++;
+				draw_point();
+				printf("Points : %d", point);
+				Beep(500, 100);
 			}
-			else
+			if (st_bull[j] == 1)
 			{
-				draw_bullet(bx, --by);
+				bullet_shoot(bx[j], by[j]--);
+				if (by[j] < 0)
+				{
+					st_bull[j] = 0;
+					clear_bullet(bx[j], by[j]);
+				}
 			}
 		}
 		Sleep(100);
